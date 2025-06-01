@@ -1,0 +1,6 @@
+.vscode/
+bin/
+out/
+build/
+target/
+.DS_Store

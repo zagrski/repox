@@ -1,0 +1,10 @@
+[package]
+name = "repox-backend"
+version = "1.0.0-dev"
+edition = "2024"
+description = "Fast and lightweight repository manager for developer artifacts"
+authors = ["Jakub Zagórski <jaqobb@jaqobb.dev>"]
+license = "Apache-2.0"
+repository = "https://github.com/jaqobb/repox"
+
+[dependencies]
