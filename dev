@@ -36,6 +36,8 @@ case "$1" in
     echo "Building frontend..."
     cd "${base_folder}/frontend"
     npm run build
+    echo "Deleting redundant frontend files..."
+    rm -f "${base_folder}/frontend/build/asset-manifest.json"
     echo "Building backend..."
     cd "${base_folder}/backend"
     cargo build --release

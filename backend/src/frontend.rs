@@ -1,4 +1,5 @@
-// Used to serve frontend when compiled in release mode and as such being used as a single binary.
+// Serve embedded frontend assets in release builds,
+// enabling the backend to run as a single standalone binary.
 
 #[cfg(any(not(debug_assertions), rust_analyzer))]
 use axum::{
