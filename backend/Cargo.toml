@@ -8,3 +8,14 @@ license = "Apache-2.0"
 repository = "https://github.com/jaqobb/repox"
 
 [dependencies]
+rust-embed = { version = "8.7.2", features = ["compression", "mime-guess"] }
+mime_guess = { version = "2.0.5" }
+tokio = { version = "1.45.1", features = ["full"] }
+tower = { version = "0.5.2", features = ["full"] }
+tower-http = { version = "0.6.6", features = ["full"] }
+serde = { version = "1.0.219", features = ["derive"] }
+axum = { version = "0.8.4", features = ["macros", "multipart"] }
+axum-server = { version = "0.7.2" }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(rust_analyzer)"] }

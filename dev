@@ -1,0 +1,56 @@
+#!/bin/bash
+
+base_folder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
+case "$1" in
+  "frontend")
+    case "$2" in
+      "start")
+        set -e
+        echo "Starting frontend..."
+        cd "${base_folder}/frontend"
+        npm start
+        ;;
+      *)
+        echo "Available commands:"
+        echo " * start"
+        ;;
+    esac
+    ;;
+  "backend")
+    case "$2" in
+      "start")
+        set -e
+        echo "Starting backend..."
+        cd "${base_folder}/backend"
+        cargo run
+        ;;
+      *)
+        echo "Available commands:"
+        echo " * start"
+        ;;
+    esac
+    ;;
+  "build")
+    set -e
+    echo "Building frontend..."
+    cd "${base_folder}/frontend"
+    npm run build
+    echo "Building backend..."
+    cd "${base_folder}/backend"
+    cargo build --release
+    echo "Preparing build directories..."
+    mkdir -p "${base_folder}/build"
+    echo "Removing old build files..."
+    rm -f "${base_folder}/build/repox"
+    echo "Copying final build to the build folder..."
+    cp "${base_folder}/backend/target/release/repox-backend" "${base_folder}/build/repox"
+    chmod +x "${base_folder}/build/repox"
+    ;;
+  *)
+    echo "Available commands:"
+    echo " * frontend <[start]>"
+    echo " * backend <[start]>"
+    echo " * build"
+    ;;
+esac
