@@ -1,5 +1,5 @@
-// Serve embedded frontend assets in release builds,
-// enabling the backend to run as a single standalone binary.
+// Embed and serve frontend assets in release builds,
+// allowing the project to run as a single standalone binary.
 
 #[cfg(any(not(debug_assertions), rust_analyzer))]
 use axum::{
