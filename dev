@@ -23,11 +23,15 @@ case "$1" in
         set -e
         echo "Starting backend..."
         cd "${base_folder}"
-        cargo run --no-default-features
+        if [[ $# -gt 2 ]]; then
+          cargo run --features "$(IFS=,; echo "${*:3}")"
+        else
+          cargo run
+        fi
         ;;
       *)
         echo "Available commands:"
-        echo " * start"
+        echo " * start [features...]"
         ;;
     esac
     ;;
@@ -40,7 +44,11 @@ case "$1" in
     rm -f "${base_folder}/resources/frontend/build/asset-manifest.json"
     echo "Building backend..."
     cd "${base_folder}"
-    cargo build --release
+    if [[ $# -gt 2 ]]; then
+      cargo build --release --features "$(IFS=,; echo "${*:3}")"
+    else
+      cargo build --release
+    fi
     echo "Preparing build directories..."
     mkdir -p "${base_folder}/build"
     echo "Removing old build files..."
@@ -51,8 +59,8 @@ case "$1" in
     ;;
   *)
     echo "Available commands:"
-    echo " * frontend <[start]>"
-    echo " * backend <[start]>"
-    echo " * build"
+    echo " * frontend"
+    echo " * backend"
+    echo " * build [features...]"
     ;;
 esac

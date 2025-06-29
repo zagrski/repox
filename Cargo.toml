@@ -18,7 +18,6 @@ axum = { version = "0.8.4", features = ["macros", "multipart"] }
 axum-server = { version = "0.7.2" }
 
 [features]
-default = ["frontend"]
 frontend = []
 
 [lints.rust]
