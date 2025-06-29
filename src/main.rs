@@ -1,4 +1,5 @@
 mod api;
+#[cfg(feature = "frontend")]
 mod frontend;
 
 use std::net::SocketAddr;
@@ -15,9 +16,9 @@ async fn main() {
     .allow_methods(Any)
     .allow_headers(Any);
   let api_routes = Router::new().route("/hello", get(api::hello));
-  #[cfg(all(debug_assertions, not(rust_analyzer)))]
+  #[cfg(not(feature = "frontend"))]
   let app = Router::new().nest("/api", api_routes).layer(cors);
-  #[cfg(any(not(debug_assertions), rust_analyzer))]
+  #[cfg(feature = "frontend")]
   let app = Router::new()
     .nest("/api", api_routes)
     .layer(cors)

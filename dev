@@ -8,7 +8,7 @@ case "$1" in
       "start")
         set -e
         echo "Starting frontend..."
-        cd "${base_folder}/frontend"
+        cd "${base_folder}/resources/frontend"
         npm start
         ;;
       *)
@@ -22,8 +22,8 @@ case "$1" in
       "start")
         set -e
         echo "Starting backend..."
-        cd "${base_folder}/backend"
-        cargo run
+        cd "${base_folder}"
+        cargo run --no-default-features
         ;;
       *)
         echo "Available commands:"
@@ -34,19 +34,19 @@ case "$1" in
   "build")
     set -e
     echo "Building frontend..."
-    cd "${base_folder}/frontend"
+    cd "${base_folder}/resources/frontend"
     npm run build
     echo "Deleting redundant frontend files..."
-    rm -f "${base_folder}/frontend/build/asset-manifest.json"
+    rm -f "${base_folder}/resources/frontend/build/asset-manifest.json"
     echo "Building backend..."
-    cd "${base_folder}/backend"
+    cd "${base_folder}"
     cargo build --release
     echo "Preparing build directories..."
     mkdir -p "${base_folder}/build"
     echo "Removing old build files..."
     rm -f "${base_folder}/build/repox"
     echo "Copying final build to the build folder..."
-    cp "${base_folder}/backend/target/release/repox-backend" "${base_folder}/build/repox"
+    cp "${base_folder}/target/release/repox" "${base_folder}/build/repox"
     chmod +x "${base_folder}/build/repox"
     ;;
   *)

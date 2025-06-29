@@ -1,19 +1,12 @@
-// Embed and serve frontend assets in release builds,
-// allowing the project to run as a single standalone binary.
-
-#[cfg(any(not(debug_assertions), rust_analyzer))]
 use axum::{
   body::Body, http::Response, http::StatusCode, http::Uri, http::header, response::IntoResponse,
 };
-#[cfg(any(not(debug_assertions), rust_analyzer))]
 use rust_embed::Embed;
 
-#[cfg(any(not(debug_assertions), rust_analyzer))]
 #[derive(Embed)]
-#[folder = "../frontend/build/"]
+#[folder = "resources/frontend/build/"]
 pub struct FrontendAssets;
 
-#[cfg(any(not(debug_assertions), rust_analyzer))]
 pub async fn serve_frontend_asset(uri: Uri) -> impl IntoResponse {
   let file_path = uri.path().trim_start_matches("/");
   let file = FrontendAssets::get(file_path).or_else(|| FrontendAssets::get("index.html"));

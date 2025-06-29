@@ -1,5 +1,5 @@
 [package]
-name = "repox-backend"
+name = "repox"
 version = "1.0.0-dev"
 edition = "2024"
 description = "Fast and lightweight repository manager for developer artifacts"
@@ -16,6 +16,10 @@ tower-http = { version = "0.6.6", features = ["full"] }
 serde = { version = "1.0.219", features = ["derive"] }
 axum = { version = "0.8.4", features = ["macros", "multipart"] }
 axum-server = { version = "0.7.2" }
+
+[features]
+default = ["frontend"]
+frontend = []
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(rust_analyzer)"] }
