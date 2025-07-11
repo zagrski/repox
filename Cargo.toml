@@ -3,22 +3,29 @@ name = "repox"
 version = "1.0.0-dev"
 edition = "2024"
 description = "Fast and lightweight repository manager for developer artifacts"
-authors = ["Jakub Zagórski <jaqobb@jaqobb.dev>"]
+authors = ["Jakub Zagórski <contact@zagrski.com>"]
 license = "Apache-2.0"
-repository = "https://github.com/jaqobb/repox"
+repository = "https://github.com/zagrski/repox"
 
 [dependencies]
-rust-embed = { version = "8.7.2", features = ["compression", "mime-guess"] }
-mime_guess = { version = "2.0.5" }
-tokio = { version = "1.45.1", features = ["full"] }
-tower = { version = "0.5.2", features = ["full"] }
-tower-http = { version = "0.6.6", features = ["full"] }
-serde = { version = "1.0.219", features = ["derive"] }
-axum = { version = "0.8.4", features = ["macros", "multipart"] }
-axum-server = { version = "0.7.2" }
+chrono = { version = "0.4.41", features = ["clock", "now"] }
+tracing = { version = "0.1.41" }
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tracing-appender = { version = "0.2.3" }
+# config = { version = "0.15.11", features = ["yaml"] }s
+# rust-embed = { version = "8.7.2", features = ["compression", "mime-guess"] }
+# mime_guess = { version = "2.0.5" }
+# tokio = { version = "1.45.1", features = ["full"] }
+# tower = { version = "0.5.2", features = ["full"] }
+# tower-http = { version = "0.6.6", features = ["full"] }
+# serde = { version = "1.0.219", features = ["derive"] }
+# axum = { version = "0.8.4", features = ["macros", "multipart"] }
+# axum-server = { version = "0.7.2" }
 
 [features]
-frontend = []
+# auth = []
+# session = []
+# frontend = []
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(rust_analyzer)"] }

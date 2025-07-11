@@ -1,30 +1,18 @@
-mod api;
-#[cfg(feature = "frontend")]
-mod frontend;
+mod configuration;
+mod log;
 
-use std::net::SocketAddr;
+use tracing::{error, info};
 
-use axum::{Router, routing::get};
-use tower_http::cors::{Any, CorsLayer};
-
-#[tokio::main]
-async fn main() {
-  // TODO: Configurable
-  let address = SocketAddr::from(([127, 0, 0, 1], 8080));
-  let cors = CorsLayer::new()
-    .allow_origin(Any)
-    .allow_methods(Any)
-    .allow_headers(Any);
-  let api_routes = Router::new().route("/hello", get(api::hello));
-  #[cfg(not(feature = "frontend"))]
-  let app = Router::new().nest("/api", api_routes).layer(cors);
-  #[cfg(feature = "frontend")]
-  let app = Router::new()
-    .nest("/api", api_routes)
-    .layer(cors)
-    .fallback(get(frontend::serve_frontend_asset));
-  axum_server::bind(address)
-    .serve(app.into_make_service())
-    .await
-    .unwrap();
+fn main() {
+    let mut log_manager = log::init_log_manager();
+    info!("Starting repox...");
+    info!("Loading configuration...");
+    let configuration = configuration::init();
+    if true {
+        if let Err(error) = log_manager.enable_debug() {
+            error!("Failed to enable debug logging: {}", error);
+        }
+    } else if let Err(error) = log_manager.disable_debug() {
+        error!("Failed to disable debug logging: {}", error);
+    }
 }
