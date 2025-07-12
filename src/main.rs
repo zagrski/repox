@@ -5,7 +5,7 @@ use tracing::{error, info};
 
 fn main() {
     let mut log_manager = log::init_log_manager();
-    info!("Starting repox... test");
+    info!("Starting repox...");
     info!("Loading configuration...");
     // let configuration = configuration::init();
     // if configuration.debug {
