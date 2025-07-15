@@ -1,6 +1,7 @@
+use anyhow::Context;
 use chrono::Local;
-use core::fmt as core_fmt;
-use core::result as core_result;
+use std::env as std_env;
+use std::fmt as std_fmt;
 use std::fs as std_fs;
 use std::io as std_io;
 use tracing::level_filters::LevelFilter;
@@ -11,14 +12,13 @@ use tracing_subscriber::fmt::format::Writer;
 use tracing_subscriber::fmt::time::FormatTime;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::registry::Registry;
-use tracing_subscriber::reload::Error;
 use tracing_subscriber::reload::Handle;
 use tracing_subscriber::util::SubscriberInitExt;
 
 struct LogTimer;
 
 impl FormatTime for LogTimer {
-    fn format_time(&self, writer: &mut Writer<'_>) -> core_fmt::Result {
+    fn format_time(&self, writer: &mut Writer<'_>) -> std_fmt::Result {
         write!(writer, "{}", Local::now().format("%Y-%m-%d %H:%M:%S"))
     }
 }
@@ -34,28 +34,36 @@ impl LogManager {
         self.level_filter == LevelFilter::DEBUG
     }
 
-    pub fn enable_debug(&mut self) -> core_result::Result<(), Error> {
+    pub fn enable_debug(&mut self) -> anyhow::Result<()> {
         self.level_filter = LevelFilter::DEBUG;
         self.apply_level_filter()
     }
 
-    pub fn disable_debug(&mut self) -> core_result::Result<(), Error> {
+    pub fn disable_debug(&mut self) -> anyhow::Result<()> {
         self.level_filter = LevelFilter::INFO;
         self.apply_level_filter()
     }
 
-    fn apply_level_filter(&self) -> core_result::Result<(), Error> {
+    fn apply_level_filter(&self) -> anyhow::Result<()> {
         self.level_filter_handle
             .modify(|level_filter| *level_filter = self.level_filter)
+            .context("Failed to apply level filter")
     }
 }
 
 pub fn init_log_manager() -> LogManager {
-    std_fs::create_dir_all("logs").expect("Failed to create logs directory at ./logs");
+    let exe_path = std_env::current_exe().expect("Failed to get executable path");
+    let exe_directory = exe_path
+        .parent()
+        .expect("Executable has no parent directory");
+    let logs_directory = exe_directory.join("logs");
+    if !logs_directory.exists() {
+        std_fs::create_dir_all(&logs_directory).expect("Failed to create logs directory");
+    }
     let level_filter = LevelFilter::INFO;
     let (level_filter_layer, level_filter_handle) =
         tracing_subscriber::reload::Layer::new(level_filter);
-    let file_writer = rolling::daily("logs", "repox.log");
+    let file_writer = rolling::daily(logs_directory, "repox.log");
     let (file_writer, file_writer_guard) = tracing_appender::non_blocking(file_writer);
     let stdout_layer = tracing_fmt::layer()
         .with_writer(std_io::stdout)
