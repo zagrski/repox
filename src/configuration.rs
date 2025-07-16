@@ -9,11 +9,18 @@ use std::env as std_env;
 use std::fs as std_fs;
 use std::str as std_str;
 
-use crate::assets::GlobalAssets;
+use crate::assets::Assets;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Configuration {
     pub debug: bool,
+    pub server: ServerConfiguration,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct ServerConfiguration {
+    pub host: String,
+    pub port: u16,
 }
 
 pub fn init() -> Result<Configuration> {
@@ -22,7 +29,7 @@ pub fn init() -> Result<Configuration> {
         .parent()
         .context("Executable has no parent directory")?;
     let embedded_configuration =
-        GlobalAssets::get("repox.yaml").context("Failed to get embedded configuration file")?;
+        Assets::get("repox.yaml").context("Failed to get embedded configuration file")?;
     let embedded_configuration_yaml = std_str::from_utf8(embedded_configuration.data.as_ref())
         .context("Failed to convert embedded configuration to string")?;
     let embedded_configuration_source =

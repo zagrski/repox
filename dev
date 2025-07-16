@@ -3,37 +3,20 @@
 base_folder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 case "$1" in
-  "frontend")
-    case "$2" in
-      "start")
-        set -e
-        echo "Starting frontend..."
-        cd "${base_folder}/resources/frontend"
-        npm start
-        ;;
-      *)
-        echo "Available commands:"
-        echo " * start"
-        ;;
-    esac
-    ;;
-  "backend")
-    case "$2" in
-      "start")
-        set -e
-        echo "Starting backend..."
-        cd "${base_folder}"
-        if [[ $# -gt 2 ]]; then
-          cargo run --features "$(IFS=,; echo "${*:3}")"
-        else
-          cargo run
-        fi
-        ;;
-      *)
-        echo "Available commands:"
-        echo " * start [features...]"
-        ;;
-    esac
+  "start")
+    set -e
+    echo "Building frontend..."
+    cd "${base_folder}/resources/frontend"
+    npm run build
+    echo "Deleting redundant frontend files..."
+    rm -f "${base_folder}/resources/frontend/build/asset-manifest.json"
+    echo "Starting backend..."
+    cd "${base_folder}"
+    if [[ $# -gt 2 ]]; then
+      cargo run --features "$(IFS=,; echo "${*:3}")"
+    else
+      cargo run
+    fi
     ;;
   "build")
     set -e
@@ -59,8 +42,7 @@ case "$1" in
     ;;
   *)
     echo "Available commands:"
-    echo " * frontend"
-    echo " * backend"
+    echo " * start [features...]"
     echo " * build [features...]"
     ;;
 esac
