@@ -9,9 +9,11 @@ use tracing::debug;
 use tracing::error;
 use tracing::info;
 
+use crate::access_token;
 use crate::configuration::Configuration;
 use crate::frontend::Frontend;
 use crate::log::LogManager;
+use crate::user;
 
 #[derive(Clone)]
 pub struct ServerState {
@@ -42,9 +44,16 @@ pub async fn start(log_manager: LogManager, configuration: Configuration) {
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any);
+    debug!("Setting up routes...");
+    let access_tokens_routes = Router::new().route("/hello", get(access_token::hello));
+    let users_routes = Router::new().route("/hello", get(user::hello));
+    let api_routes = Router::new()
+        .nest("/access-tokens", access_tokens_routes)
+        .nest("/users", users_routes);
     debug!("Setting up router...");
     let router = Router::new()
         .with_state(server_state)
+        .nest("/api", api_routes)
         .layer(cors_layer)
         .fallback(get(Frontend::serve));
     info!("Server listening on {}", server_address);
